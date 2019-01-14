@@ -1,0 +1,20 @@
+Add setup method which creates collections and adds indexs to mongodb
+
+Create user
+Update user
+Delete user
+
+Projects -> Features -> Task
+
+Create Project 
+ - Name
+ - Owner
+
+Create Features
+ - Name
+ - Description
+
+Create Task
+ - Name
+ - Description
+ - Complete
