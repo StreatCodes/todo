@@ -12,7 +12,7 @@ pub fn setup_mongo_db() -> std::sync::Arc<DatabaseInner> {
 
     let db = mongo_client.db("todo");
 	db.auth("todo", "todo").expect("mongodb auth failed");
-    println!("Authenticated\nSetting up index");
+    println!("Authenticated\nSetting up DB indexes");
 
 	let mut user_options = IndexOptions::new();
 	user_options.unique = Some(true);
