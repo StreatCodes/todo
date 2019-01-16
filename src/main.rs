@@ -13,7 +13,10 @@ fn main() {
                 r.method(http::Method::GET).f(user::get_all_handle);
                 r.method(http::Method::PUT).f(user::create_handle)
             })
-            .resource("/users/{id}", |r| r.method(http::Method::GET).f(user::get_handle))
+            .resource("/users/{id}", |r| {
+                r.method(http::Method::GET).f(user::get_handle);
+                r.method(http::Method::DELETE).f(user::delete_handle)
+            })
     })
     .bind("127.0.0.1:8080")
     .unwrap()

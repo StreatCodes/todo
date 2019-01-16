@@ -72,7 +72,7 @@ pub fn create_handle(req: &HttpRequest<app::State>) -> FutureResponse<HttpRespon
             println!("Error converting the BSON object into a MongoDB document");
         }
 
-        Ok(HttpResponse::Ok().body(b).into())
+        Ok(HttpResponse::Ok().into())
     }).responder()
 }
 
@@ -100,22 +100,15 @@ pub fn update_handle(req: &HttpRequest<app::State>) -> HttpResponse {
 
 /// Delete user endpoint
 pub fn delete_handle(req: &HttpRequest<app::State>) -> HttpResponse {
-    println!("{:?}", req);
+    let coll = req.state().db.collection("users");
+    let params = Path::<String>::extract(req).expect("No ID found in URL parameter");
+    let id = params.into_inner();
 
-    let coll = req.state().db.collection("movies");
-    println!("Collection set");
-    let mut cur = coll.find(None, None).expect("Error finding");
-    println!("queried movies collection");
+    let filter = doc! {
+        "_id": ObjectId::with_string(&id).expect("Error converting ID to OID")
+    };
 
-    // for item in cur {
-    //     let i = item.expect("it cool");
-    //     println!("{}", i);
-    // }
-    let res = cur.next().unwrap().unwrap();
+    coll.delete_one(filter, None).expect("Error finding");
 
-    let j = serde_json::to_string(&res).unwrap();
-    let to = req.match_info().get("name").unwrap_or("World");
-
-    let name = req.match_info().get("name").unwrap_or("World");
-    HttpResponse::Ok().body(format!("Hi {}, heres your document:\n\n{}", name, j))
+    HttpResponse::Ok().into()
 }
