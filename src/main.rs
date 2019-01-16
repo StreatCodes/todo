@@ -9,8 +9,11 @@ fn main() {
 
     server::new( move ||{
         App::with_state(app::State{db: todo_db.clone()})
-            .resource("/users", |r| r.f(user::get_all_handle))
-            .resource("/users/{id}", |r| r.f(user::get_handle))
+            .resource("/users", |r| {
+                r.method(http::Method::GET).f(user::get_all_handle);
+                r.method(http::Method::PUT).f(user::create_handle)
+            })
+            .resource("/users/{id}", |r| r.method(http::Method::GET).f(user::get_handle))
     })
     .bind("127.0.0.1:8080")
     .unwrap()
