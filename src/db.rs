@@ -6,7 +6,7 @@ use bson::*;
 
 pub fn setup_mongo_db() -> std::sync::Arc<DatabaseInner> {
     println!("Connecting to mongodb");
-    let mongo_client = Client::with_uri("mongodb://todo:todo@10.1.1.25/todo")
+    let mongo_client = Client::with_uri("mongodb://todo:todo@localhost/todo")
         .expect("Failed to initialize standalone client.");
     println!("Connected");
 
