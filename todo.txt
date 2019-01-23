@@ -1,10 +1,13 @@
-Fix Create user - match individual values
-
 Projects -> Features -> Task
 
 Create Project 
  - Name
  - Owner
+PUT
+PATCH
+DELETE
+GET
+GET (all)
 
 Create Features
  - Name
@@ -14,3 +17,6 @@ Create Task
  - Name
  - Description
  - Complete
+
+Add middlewares (catch on panic, logging)
+Improve endpoint error handling
