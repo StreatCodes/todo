@@ -119,14 +119,26 @@ pub fn update_handle(req: &HttpRequest<app::State>) -> FutureResponse<HttpRespon
             "_id": ObjectId::with_string(&id).expect("Error converting ID to OID")
         };
 
-        if let bson::Bson::Document(document) = serialized {
-            println!("{:?}", document);
-            coll.update_one(filter, doc!{"$set": document}, None).expect("Failed to insert");
-        } else {
-            println!("Error converting the BSON object into a MongoDB document");
-        }
+        let result = if let bson::Bson::Document(document) = serialized {
+            let res = coll.update_one(filter, doc!{"$set": document}, None).expect("Failed to insert");
 
-        Ok(HttpResponse::Ok().into())
+            if let Some(ex) = res.write_exception {
+                match ex.write_error {
+                    Some(err) => {
+                        HttpResponse::Ok().body(
+                            json!({"error": {"code": err.code, "message": err.message}}).to_string()
+                        )
+                    },
+                    _ => HttpResponse::new(http::StatusCode::INTERNAL_SERVER_ERROR)
+                }
+            } else {
+                HttpResponse::new(http::StatusCode::OK)
+            }
+        } else {
+            HttpResponse::new(http::StatusCode::INTERNAL_SERVER_ERROR)
+        };
+
+        Ok(result.into())
     }).responder()
 }
 
